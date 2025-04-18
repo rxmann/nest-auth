@@ -29,7 +29,7 @@ export class UserService {
 
   async create(createUserInput: CreateUserInput) {
     const hash = await argon2.hash(createUserInput.password);
-    const newUser = {...createUserInput, password: hash }
+    const newUser = { ...createUserInput, password: hash };
     return await this.databaseService.user.create({
       data: newUser,
     });
@@ -42,6 +42,12 @@ export class UserService {
   async findOne(id: number) {
     return await this.databaseService.user.findUnique({
       where: { id },
+    });
+  }
+
+  async findByEmail(email: string) {
+    return await this.databaseService.user.findUnique({
+      where: { email },
     });
   }
 

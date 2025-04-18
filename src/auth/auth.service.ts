@@ -2,13 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from 'src/user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AuthJwtPayload } from './types/auth-jwt-payload.type';
-import { PrismaService } from 'src/common/database/prisma.service';
+import { CreateUserInput } from 'src/user/dto/create-user.input';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private prisma: PrismaService,
+    private userService: UserService,
   ) {}
 
   async generateAccessToken(user: User) {
@@ -28,16 +29,18 @@ export class AuthService {
   }
 
   async validateJwtUser(email: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('User not found.');
     }
 
-    const currentUser = { id: user.id };
+    const currentUser = { id: user.id, email };
     return currentUser;
+  }
+
+  async validateGoogleUser(googleUser: CreateUserInput) {
+    const user = await this.userService.findByEmail(googleUser.email);
+    if (user) return user;
+    return await this.userService.create(googleUser);
   }
 }

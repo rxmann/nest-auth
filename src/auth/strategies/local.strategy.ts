@@ -12,11 +12,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string) {
+    if (password === '')
+      throw new UnauthorizedException('Please provide a valid password.');
     try {
-        const user = await this.userService.verifyUser(email, password);
-        return user;
+      const user = await this.userService.verifyUser(email, password);
+      return user;
     } catch (error) {
-        throw new UnauthorizedException("Could not verify the user.");
+      throw new UnauthorizedException('Could not verify the user.');
     }
   }
 }

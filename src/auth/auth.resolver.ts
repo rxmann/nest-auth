@@ -7,6 +7,7 @@ import { UseGuards } from '@nestjs/common';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import { SignInInput } from './dto/signin.input';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -21,7 +22,7 @@ export class AuthResolver {
     @Args('signInInput') signInInput: SignInInput,
     @CurrentUser() user: User,
   ) {
-    console.log(user)
+    console.log(user);
     return this.authService.login(user);
   }
 }
