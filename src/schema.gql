@@ -8,6 +8,13 @@ type User {
   username: String!
 }
 
+type AuthPayload {
+  id: Int!
+  email: String!
+  username: String!
+  accessToken: String!
+}
+
 type Query {
   users: [User!]!
   user(id: Int!): User!
@@ -17,15 +24,23 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
+  loginUser(signInInput: SignInInput!): AuthPayload!
 }
 
 input CreateUserInput {
   email: String!
   username: String!
+  password: String!
 }
 
 input UpdateUserInput {
   email: String
   username: String
+  password: String
   id: Float!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
 }
